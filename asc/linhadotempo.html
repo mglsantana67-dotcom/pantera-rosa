@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uma viagem no tempo — Evolução dos jogos eletrônicos</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #050816;
+      font-family: 'Jaro', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background glows */
+    .bg-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: rgba(49, 68, 192, 0.25);
+      filter: blur(90px);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow-1 {
+      top: -100px;
+      right: -150px;
+    }
+
+    .bg-glow-2 {
+      bottom: -100px;
+      left: -200px;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 120px 30px 120px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 90px;
+    }
+
+    .header h1 {
+      font-family: 'Jaro', sans-serif;
+      font-size: 45px;
+      line-height: 1.2;
+      font-weight: 400;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+
+    .header p {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      line-height: 1.4;
+      color: #7E879D;
+      max-width: 662px;
+      margin: 0 auto;
+    }
+
+    /* ============ TIMELINE — HORIZONTAL ============ */
+    .timeline {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      height: 620px;
+      width: 100%;
+    }
+
+    /* Horizontal line */
+    .timeline-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #7133A8 0%, #3153A8 50%, #05758A 100%);
+      border-radius: 10px;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    /* Timeline item (one column) */
+    .timeline-item {
+      position: relative;
+      flex: 1 1 0;
+      max-width: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .slot {
+      width: 100%;
+      height: 50%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .slot.top {
+      align-items: flex-end;
+      padding-bottom: 14px;
+    }
+
+    .slot.bottom {
+      align-items: flex-start;
+      padding-top: 14px;
+    }
+
+    /* Card */
+    .card {
+      width: 230px;
+      background: #111827;
+      border: 1px solid #273750;
+      border-radius: 8px;
+      padding: 18px 20px 20px;
+      position: relative;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(168, 85, 247, 0.5);
+      box-shadow: 0 14px 34px rgba(124, 58, 237, 0.2);
+    }
+
+    .card-year {
+      font-family: 'Jaro', sans-serif;
+      font-size: 15px;
+      line-height: 1.1;
+      color: #18C9DF;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: 'Jaro', sans-serif;
+      font-size: 21px;
+      line-height: 1.15;
+      color: #A855F7;
+      margin-bottom: 12px;
+    }
+
+    .card-text {
+      font-family: 'Jaro', sans-serif;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #D0D5DF;
+    }
+
+    /* Dot on the line */
+    .dot {
+      width: 14px;
+      height: 14px;
+      background: #3153A8;
+      border: 2px solid #070A14;
+      border-radius: 50%;
+      flex: none;
+      z-index: 3;
+    }
+
+    /* Connector line from card to the dot */
+    .connector {
+      width: 2px;
+      height: 16px;
+      background: #273750;
+      flex: none;
+      z-index: 1;
+    }
+
+    /* Responsive fallback: vertical stacked timeline */
+    @media (max-width: 1100px) {
+      .header h1 { font-size: 36px; }
+      .header p { font-size: 17px; }
+
+      .timeline {
+        flex-direction: column;
+        height: auto;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .timeline-line {
+        top: 0;
+        bottom: 0;
+        left: 24px;
+        right: auto;
+        width: 4px;
+        height: auto;
+        background: linear-gradient(180deg, #7133A8 0%, #3153A8 50%, #05758A 100%);
+        transform: none;
+      }
+
+      .timeline-item {
+        flex-direction: row;
+        max-width: none;
+        align-items: flex-start;
+        margin-bottom: 40px;
+        padding-left: 60px;
+      }
+      .timeline-item:last-child { margin-bottom: 0; }
+
+      .slot {
+        width: auto;
+        height: auto;
+      }
+      .slot.top { display: none; }
+      .slot.bottom {
+        display: flex;
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+
+      .dot {
+        position: absolute;
+        left: 24px;
+        top: 6px;
+        transform: translateX(-50%);
+      }
+
+      .connector {
+        position: absolute;
+        left: 24px;
+        top: 6px;
+        width: 30px;
+        height: 2px;
+        transform: translateX(6px);
+      }
+
+      .card {
+        width: 100%;
+        max-width: 397px;
+      }
+
+      .card-title { font-size: 24px; }
+      .card-text { font-size: 18px; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 50px 16px 80px; }
+      .header h1 { font-size: 30px; }
+      .card { padding: 18px 18px 20px; }
+      .card-text { font-size: 16px; }
+    }
+  </style>
+
+<style>
+.site-nav{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  z-index:9999;display:flex;align-items:center;gap:6px;padding:8px;
+  border:1px solid rgba(168,85,247,.25);border-radius:18px;
+  background:rgba(5,8,22,.82);backdrop-filter:blur(14px);
+  box-shadow:0 12px 35px rgba(0,0,0,.35);
+}
+.site-nav a{
+  color:#cbd5e1;text-decoration:none;font:600 13px/1 Arial,sans-serif;
+  padding:10px 14px;border-radius:12px;transition:.2s ease;
+}
+.site-nav a:hover,.site-nav a.active{
+  color:#fff;background:linear-gradient(90deg,#7C3AED,#A855F7);
+  box-shadow:0 0 18px rgba(124,58,237,.45);
+}
+.home-btn{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  color:#fff;text-decoration:none;font:700 13px/1 Arial,sans-serif;
+  padding:12px 16px;border-radius:14px;background:linear-gradient(90deg,#7C3AED,#A855F7);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 25px rgba(124,58,237,.35);transition:.2s ease;
+}
+.home-btn:hover{transform:translateY(-3px);filter:brightness(1.08)}
+@media(max-width:700px){
+  .site-nav{width:calc(100% - 20px);justify-content:center;flex-wrap:wrap;top:10px}
+  .site-nav a{padding:8px 9px;font-size:11px}
+  .home-btn{right:12px;bottom:12px;padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Navegação principal">
+  <a href="index.html">Início</a>
+  <a href="historia.html" class="">História</a>
+  <a href="linhadotempo.html" class="active">Linha do tempo</a>
+  <a href="games.html" class="">Games</a>
+  <a href="console.html" class="">Console</a>
+  <a href="jogo.html">Jogo</a>
+</nav>
+<a class="home-btn" href="index.html">← Voltar para o início</a>
+
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="container">
+    <header class="header">
+      <h1>Uma viagem no tempo</h1>
+      <p>A evolução dos jogos eletrônicos ao longo das décadas</p>
+    </header>
+
+    <div class="timeline">
+      <div class="timeline-line"></div>
+
+      <!-- 1950–1960 -->
+      <div class="timeline-item">
+        <div class="slot top">
+          <div class="card">
+            <div class="card-year">1950–1960</div>
+            <h2 class="card-title">Os primeiros experimentos</h2>
+            <p class="card-text">Nos anos 1950, cientistas criaram os primeiros jogos em computadores experimentais. "Tennis for Two" (1958) e "Spacewar!" (1962) são considerados os pioneiros.</p>
+          </div>
+        </div>
+        <div class="connector"></div>
+        <div class="dot"></div>
+        <div class="slot bottom"></div>
+      </div>
+
+      <!-- 1970 -->
+      <div class="timeline-item">
+        <div class="slot top"></div>
+        <div class="connector"></div>
+        <div class="dot"></div>
+        <div class="slot bottom">
+          <div class="card">
+            <div class="card-year">1970</div>
+            <h2 class="card-title">A chegada dos Arcades</h2>
+            <p class="card-text">Os anos 70 marcaram o nascimento dos fliperamas com Pong (1972) e Space Invaders (1978). Os jogos saíram dos laboratórios e chegaram ao público.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1980 -->
+      <div class="timeline-item">
+        <div class="slot top">
+          <div class="card">
+            <div class="card-year">1980</div>
+            <h2 class="card-title">A era dos consoles</h2>
+            <p class="card-text">A década de 80 trouxe o NES, o Master System e o Game Boy. Pac-Man, Mario e Zelda se tornaram ícones da cultura pop mundial.</p>
+          </div>
+        </div>
+        <div class="connector"></div>
+        <div class="dot"></div>
+        <div class="slot bottom"></div>
+      </div>
+
+      <!-- 1990 -->
+      <div class="timeline-item">
+        <div class="slot top"></div>
+        <div class="connector"></div>
+        <div class="dot"></div>
+        <div class="slot bottom">
+          <div class="card">
+            <div class="card-year">1990</div>
+            <h2 class="card-title">3D e novas tecnologias</h2>
+            <p class="card-text">Os anos 90 revolucionaram com gráficos 3D. PlayStation, Nintendo 64 e jogos como Tomb Raider e Final Fantasy VII mudaram tudo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2000 -->
+      <div class="timeline-item">
+        <div class="slot top">
+          <div class="card">
+            <div class="card-year">2000</div>
+            <h2 class="card-title">A era online</h2>
+            <p class="card-text">A internet transformou os jogos com multiplayer online. World of Warcraft, Xbox Live e o início dos jogos mobile marcaram a década.</p>
+          </div>
+        </div>
+        <div class="connector"></div>
+        <div class="dot"></div>
+        <div class="slot bottom"></div>
+      </div>
+
+      <!-- 2010–Hoje -->
+      <div class="timeline-item">
+        <div class="slot top"></div>
+        <div class="connector"></div>
+        <div class="dot"></div>
+        <div class="slot bottom">
+          <div class="card">
+            <div class="card-year">2010–Hoje</div>
+            <h2 class="card-title">Games modernos</h2>
+            <p class="card-text">Realidade virtual, streaming de jogos, e-sports e gráficos ultra-realistas definem a era atual. Os jogos são a maior indústria do entretenimento.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

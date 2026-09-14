@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linha do tempo dos Video games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jaro&family=Outfit:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #050816;
+    --spine-a: #3144C0;
+    --spine-b: #7484FF;
+    --year-blue: #7484FF;
+    --card-bg: rgba(114,114,114,0.25098);
+    --card-border: rgba(49,68,192,0.501961);
+    --title-blue: rgba(49,68,192,0.9);
+    --heading: #FFFFFF;
+    --body-text: #CBD5E1;
+    --label-gray: #8891b0;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html, body{
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body{
+    background: var(--bg);
+    position: relative;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* glow blobs */
+  .bg-glow{
+    position: fixed;
+    width: 800px;
+    height: 700px;
+    background: rgba(124,58,237,0.18);
+    filter: blur(100px);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-glow.a{ left: -150px; top: -260px; }
+  .bg-glow.b{ right: -150px; top: 250px; background: rgba(49,68,192,0.2); }
+
+  /* title */
+  .hero{
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding-top: 110px;
+  }
+  .hero h1{
+    font-family: 'Jaro', sans-serif;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.2;
+    background: linear-gradient(90deg, #A855F7, #7484FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(124,58,237,0.4);
+  }
+  .hero .debug-label{
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--label-gray);
+    margin-top: 6px;
+  }
+
+  /* horizontal timeline */
+  .timeline-wrap{
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 0 18px;
+    scrollbar-color: rgba(168,85,247,0.5) rgba(255,255,255,0.06);
+    scrollbar-width: thin;
+  }
+  .timeline-wrap::-webkit-scrollbar{ height: 8px; }
+  .timeline-wrap::-webkit-scrollbar-track{ background: rgba(255,255,255,0.06); border-radius: 10px; }
+  .timeline-wrap::-webkit-scrollbar-thumb{ background: rgba(168,85,247,0.5); border-radius: 10px; }
+
+  .scroll-hint{
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--label-gray);
+    margin: 4px 0 -6px;
+  }
+
+  .timeline{
+    position: relative;
+    z-index: 1;
+    width: max-content;
+    min-width: 100%;
+    margin: 40px auto 20px;
+    padding: 0 40px;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 0 60px;
+  }
+
+  .spine-line{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 358px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--spine-a) 0%, var(--spine-b) 25%, #A855F7 50%, var(--spine-b) 75%, var(--spine-a) 100%);
+    z-index: 0;
+    border-radius: 2px;
+  }
+
+  .item{
+    width: 300px;
+    flex: none;
+    height: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .slot{
+    width: 100%;
+    height: 338px;
+    display: flex;
+    justify-content: center;
+  }
+  .slot.top{ align-items: flex-end; }
+  .slot.bottom{ align-items: flex-start; }
+
+  .node{
+    width: 36px;
+    height: 36px;
+    background: var(--bg);
+    border: 4px solid var(--spine-b);
+    box-shadow: 0 0 14px var(--spine-b);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    margin: 8px 0;
+  }
+  .node::after{
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: #FFFFFF;
+    border-radius: 50%;
+  }
+
+  /* card */
+  .card{
+    box-sizing: border-box;
+    width: 320px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 24px 24px;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 22px;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .card:hover{
+    transform: translateY(-6px);
+    border-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 16px 40px rgba(124, 58, 237, 0.25);
+  }
+
+  .card .thumb{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    font-size: 44px;
+    filter: drop-shadow(0 8px 14px rgba(124,58,237,0.35));
+  }
+  .card .thumb img{
+    max-width: 100%;
+    max-height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 16px rgba(0,0,0,0.5));
+  }
+
+  .card .top-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .card .year{
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--year-blue);
+  }
+
+  .card .icon{
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
+  }
+  .card .icon svg{ width: 100%; height: 100%; display: block; }
+
+  .card .title{
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1.25;
+    color: var(--heading);
+    width: 100%;
+  }
+
+  .card p{
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 13.5px;
+    line-height: 148%;
+    color: var(--body-text);
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (max-width: 900px){
+    .timeline-wrap{ overflow-x: visible; }
+    .scroll-hint{ display: none; }
+    .item{ width: 100%; max-width: 420px; height: auto; }
+    .spine-line{ display: none; }
+    .slot{ height: auto; }
+    .slot.top, .slot.bottom{ align-items: center; padding: 10px 0; }
+    .timeline{ flex-direction: column; align-items: center; flex-wrap: wrap; width: 100%; padding: 0 20px; gap: 20px 0; }
+  }
+</style>
+
+<style>
+.site-nav{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  z-index:9999;display:flex;align-items:center;gap:6px;padding:8px;
+  border:1px solid rgba(168,85,247,.25);border-radius:18px;
+  background:rgba(5,8,22,.82);backdrop-filter:blur(14px);
+  box-shadow:0 12px 35px rgba(0,0,0,.35);
+}
+.site-nav a{
+  color:#cbd5e1;text-decoration:none;font:600 13px/1 Arial,sans-serif;
+  padding:10px 14px;border-radius:12px;transition:.2s ease;
+}
+.site-nav a:hover,.site-nav a.active{
+  color:#fff;background:linear-gradient(90deg,#7C3AED,#A855F7);
+  box-shadow:0 0 18px rgba(124,58,237,.45);
+}
+.home-btn{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  color:#fff;text-decoration:none;font:700 13px/1 Arial,sans-serif;
+  padding:12px 16px;border-radius:14px;background:linear-gradient(90deg,#7C3AED,#A855F7);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 25px rgba(124,58,237,.35);transition:.2s ease;
+}
+.home-btn:hover{transform:translateY(-3px);filter:brightness(1.08)}
+@media(max-width:700px){
+  .site-nav{width:calc(100% - 20px);justify-content:center;flex-wrap:wrap;top:10px}
+  .site-nav a{padding:8px 9px;font-size:11px}
+  .home-btn{right:12px;bottom:12px;padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" aria-label="Navegação principal">
+  <a href="index.html">Início</a>
+  <a href="historia.html" class="">História</a>
+  <a href="linhadotempo.html" class="">Linha do tempo</a>
+  <a href="games.html" class="">Games</a>
+  <a href="console.html" class="active">Console</a>
+  <a href="jogo.html">Jogo</a>
+</nav>
+<a class="home-btn" href="index.html">← Voltar para o início</a>
+
+  <div class="bg-glow a"></div>
+  <div class="bg-glow b"></div>
+
+  <div class="hero">
+    <h1>Linha do tempo dos Video games</h1>
+    <div class="debug-label">1972 — 2025 · Do Atari ao Nintendo Switch 2</div>
+  </div>
+
+  <p class="scroll-hint">⟵ Arraste para o lado para ver todas as gerações ⟶</p>
+
+  <div class="timeline-wrap">
+  <div class="timeline">
+    <div class="spine-line"></div>
+
+    <!-- 1972 :: Pong (card em cima) -->
+    <div class="item">
+      <div class="slot top">
+        <div class="card">
+          <div class="thumb"><img src="img/pong.png" alt="Pong"></div>
+          <div class="top-row">
+            <div class="year">1972</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">Pong</div>
+          <p>O Atari Pong marcou o início da era dos videogames comerciais, levando a diversão eletrônica para milhões de lares.</p>
+        </div>
+      </div>
+      <div class="node"></div>
+      <div class="slot bottom"></div>
+    </div>
+
+    <!-- 1985 :: Nintendo NES (card embaixo) -->
+    <div class="item">
+      <div class="slot top"></div>
+      <div class="node"></div>
+      <div class="slot bottom">
+        <div class="card">
+          <div class="thumb"><img src="img/ness.png" alt="Console e cartuchos"></div>
+          <div class="top-row">
+            <div class="year">1985</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">Nintendo NES</div>
+          <p>O Nintendo Entertainment System revitalizou a indústria dos games após a crise de 1983, trazendo clássicos como Super Mario Bros.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1994 :: PlayStation (card em cima) -->
+    <div class="item">
+      <div class="slot top">
+        <div class="card">
+          <div class="thumb"><img src="img/ps1.png" alt="PlayStation"></div>
+          <div class="top-row">
+            <div class="year">1994</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">PlayStation</div>
+          <p>A Sony entrou no mercado com o PlayStation, revolucionando os gráficos 3D e expandindo o público gamer.</p>
+        </div>
+      </div>
+      <div class="node"></div>
+      <div class="slot bottom"></div>
+    </div>
+
+    <!-- 2000 :: PlayStation 2 (card embaixo) -->
+    <div class="item">
+      <div class="slot top"></div>
+      <div class="node"></div>
+      <div class="slot bottom">
+        <div class="card">
+          <div class="thumb"><img src="img/ps2.png" alt="PlayStation 2"></div>
+          <div class="top-row">
+            <div class="year">2000</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">PlayStation 2</div>
+          <p>Tornou-se o console mais vendido da história, tocando DVDs e consolidando os jogos em 3D como padrão da indústria.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2005 :: Xbox 360 (card em cima) -->
+    <div class="item">
+      <div class="slot top">
+        <div class="card">
+          <div class="thumb"><img src="img/xbox360.jpg" alt="Xbox 360"></div>
+          <div class="top-row">
+            <div class="year">2005</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">Xbox 360</div>
+          <p>A Microsoft consolidou sua presença no mercado com o Xbox Live, popularizando o multiplayer online em consoles.</p>
+        </div>
+      </div>
+      <div class="node"></div>
+      <div class="slot bottom"></div>
+    </div>
+
+    <!-- 2006 :: Nintendo Wii (card embaixo) -->
+    <div class="item">
+      <div class="slot top"></div>
+      <div class="node"></div>
+      <div class="slot bottom">
+        <div class="card">
+          <div class="thumb"><img src="img/wii.png" alt="Nintendo Wii"></div>
+          <div class="top-row">
+            <div class="year">2006</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">Nintendo Wii</div>
+          <p>O Wii trouxe controles de movimento e tornou os videogames acessíveis para toda a família.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2013 :: PS4 & Xbox One (card em cima) -->
+    <div class="item">
+      <div class="slot top">
+        <div class="card">
+          <div class="thumb"><img src="img/xbox one s e ps4.jpg" alt="PS4 e Xbox One"></div>
+          <div class="top-row">
+            <div class="year">2013</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">PS4 & Xbox One</div>
+          <p>A nova geração apostou em jogos digitais, streaming e redes sociais integradas, mirando a era dos serviços online.</p>
+        </div>
+      </div>
+      <div class="node"></div>
+      <div class="slot bottom"></div>
+    </div>
+
+    <!-- 2017 :: Nintendo Switch (card embaixo) -->
+    <div class="item">
+      <div class="slot top"></div>
+      <div class="node"></div>
+      <div class="slot bottom">
+        <div class="card">
+          <div class="thumb"><img src="img/Nintendo Switch 1.png" alt="Nintendo Switch"></div>
+          <div class="top-row">
+            <div class="year">2017</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">Nintendo Switch</div>
+          <p>O console híbrido uniu portátil e doméstico em um só aparelho, redefinindo como e onde as pessoas jogam.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2020 :: PS5 & Xbox Series X|S (card em cima) -->
+    <div class="item">
+      <div class="slot top">
+        <div class="card">
+          <div class="thumb"><img src="img/PS5 e Xbox Series.webp" alt="PS5 e Xbox Series X|S"></div>
+          <div class="top-row">
+            <div class="year">2020</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">PS5 & Xbox Series X|S</div>
+          <p>SSDs ultrarrápidos, ray tracing e resolução 4K elevaram os gráficos e os tempos de carregamento a um novo patamar.</p>
+        </div>
+      </div>
+      <div class="node"></div>
+      <div class="slot bottom"></div>
+    </div>
+
+    <!-- 2025 :: Nintendo Switch 2 (card embaixo) -->
+    <div class="item">
+      <div class="slot top"></div>
+      <div class="node"></div>
+      <div class="slot bottom">
+        <div class="card">
+          <div class="thumb"><img src="img/Nintendo Switch 2.webp" alt="Nintendo Switch 2"></div>
+          <div class="top-row">
+            <div class="year">2025</div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7484FF" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          </div>
+          <div class="title">Nintendo Switch 2</div>
+          <p>A nova geração híbrida da Nintendo chega com mais potência e telas maiores, seguindo a fórmula que consagrou o console original.</p>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- Close timeline -->
+  </div> <!-- Close timeline-wrap -->
+</body>
+</html>

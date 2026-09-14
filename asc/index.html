@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>História dos Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jaro&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;color:#f8fafc;font-family:Outfit,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(124,58,237,.20),transparent 30%),
+    radial-gradient(circle at 85% 70%,rgba(168,85,247,.18),transparent 32%),
+    #050816;overflow-x:hidden;
+}
+body:before,body:after{
+  content:"";position:fixed;width:360px;height:360px;border-radius:50%;
+  filter:blur(90px);opacity:.12;pointer-events:none;z-index:-1;
+}
+body:before{background:#7C3AED;left:-120px;top:30%}
+body:after{background:#A855F7;right:-130px;bottom:10%}
+.site-nav{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;
+  display:flex;gap:6px;padding:8px;border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;background:rgba(5,8,22,.78);backdrop-filter:blur(16px);
+  box-shadow:0 15px 45px rgba(0,0,0,.35);
+}
+.site-nav a{
+  color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600;
+  padding:10px 14px;border-radius:12px;transition:.2s ease;
+}
+.site-nav a:hover,.site-nav a.active{
+  background:linear-gradient(90deg,#7C3AED,#A855F7);color:#fff;box-shadow:0 0 20px rgba(124,58,237,.45)
+}
+.hero{
+  min-height:690px;display:flex;align-items:center;justify-content:center;
+  padding:120px 7% 70px;text-align:center;
+}
+.hero-content{max-width:980px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 14px;
+  border:1px solid rgba(168,85,247,.3);border-radius:999px;
+  background:rgba(168,85,247,.08);color:#D8B4FE;font-size:13px;
+  font-weight:600;margin-bottom:24px;
+}
+.badge span{width:7px;height:7px;border-radius:50%;background:#A855F7;box-shadow:0 0 12px #A855F7}
+h1{
+  font-family:Jaro,Outfit,sans-serif;font-size:clamp(58px,9vw,128px);
+  line-height:.9;letter-spacing:1px;
+  background:linear-gradient(180deg,#fff 15%,#C4B5FD 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p{max-width:700px;margin:28px auto 0;color:#aab6ca;font-size:18px;line-height:1.7}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:34px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  text-decoration:none;border-radius:14px;padding:14px 20px;
+  font-weight:700;transition:.2s ease;
+}
+.btn.primary{background:linear-gradient(90deg,#7C3AED,#A855F7);color:#fff;box-shadow:0 12px 30px rgba(124,58,237,.35)}
+.btn.secondary{color:#dbeafe;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.04)}
+.btn:hover{transform:translateY(-3px);filter:brightness(1.08)}
+section{padding:80px 7%;max-width:1280px;margin:auto}
+.section-head{text-align:center;margin-bottom:38px}
+.eyebrow{color:#C4B5FD;text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:800}
+.section-head h2{font-size:38px;margin-top:8px}
+.section-head p{color:#8fa0b8;margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{
+  position:relative;min-height:230px;padding:25px;border-radius:22px;
+  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(145deg,rgba(17,27,53,.85),rgba(8,12,29,.85));
+  overflow:hidden;transition:.25s ease;
+}
+.card:before{
+  content:"";position:absolute;width:130px;height:130px;border-radius:50%;
+  background:#A855F7;filter:blur(65px);opacity:.16;right:-45px;top:-45px;
+}
+.card:hover{transform:translateY(-7px);border-color:rgba(168,85,247,.5);box-shadow:0 20px 50px rgba(124,58,237,.2)}
+.number{color:#C4B5FD;font-size:12px;font-weight:800;letter-spacing:1px}
+.card h3{font-size:24px;margin:18px 0 9px}
+.card p{color:#91a0b7;line-height:1.55;font-size:14px}
+.card a{display:inline-block;margin-top:20px;color:#D8B4FE;text-decoration:none;font-weight:700;font-size:14px}
+.footer{text-align:center;padding:40px 20px 55px;color:#718096;border-top:1px solid rgba(255,255,255,.07);font-size:13px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+  .site-nav{width:calc(100% - 20px);justify-content:center;flex-wrap:wrap;top:10px}
+  .site-nav a{padding:8px 9px;font-size:11px}
+  .hero{min-height:650px;padding:130px 20px 60px}
+  .hero p{font-size:16px}
+  section{padding:60px 20px}
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html" class="active">Início</a>
+  <a href="historia.html">História</a>
+  <a href="linhadotempo.html">Linha do tempo</a>
+  <a href="games.html">Games</a>
+  <a href="console.html">Console</a>
+  <a href="jogo.html">Jogo</a>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="hero-content">
+    <div class="badge"><span></span> PROJETO — HISTÓRIA DOS GAMES</div>
+    <h1>HISTÓRIA<br>DOS GAMES</h1>
+    <p>Uma viagem pela evolução dos jogos eletrônicos, desde os primeiros experimentos até os games que marcaram gerações.</p>
+    <div class="actions">
+      <a class="btn primary" href="historia.html">Começar a explorar →</a>
+      <a class="btn secondary" href="#conteudo">Ver seções</a>
+    </div>
+  </div>
+</header>
+
+<section id="conteudo">
+  <div class="section-head">
+    <div class="eyebrow">Explore o projeto</div>
+    <h2>Escolha uma seção</h2>
+    <p>Cada página está separada em seu próprio arquivo HTML para facilitar a organização.</p>
+  </div>
+  <div class="cards">
+    <article class="card">
+      <div class="number">01 — HISTÓRIA</div>
+      <h3>A História dos Games</h3>
+      <p>Uma visão geral da evolução dos jogos eletrônicos e de como eles se tornaram parte da cultura.</p>
+      <a href="historia.html">Abrir página →</a>
+    </article>
+    <article class="card">
+      <div class="number">02 — LINHA DO TEMPO</div>
+      <h3>Viagem no tempo</h3>
+      <p>Veja os principais períodos da evolução dos jogos, dos primeiros experimentos aos games modernos.</p>
+      <a href="linhadotempo.html">Abrir página →</a>
+    </article>
+    <article class="card">
+      <div class="number">03 — GAMES</div>
+      <h3>Games que marcaram</h3>
+      <p>Relembre jogos importantes como Space Invaders, Super Mario, Minecraft, GTA V e outros.</p>
+      <a href="games.html">Abrir página →</a>
+    </article>
+    <article class="card">
+      <div class="number">04 — CONSOLE</div>
+      <h3>Console</h3>
+      <p>Acesse a página de console e confira a linha do tempo apresentada no projeto.</p>
+      <a href="console.html">Abrir página →</a>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer class="footer">Projeto escolar — História dos Games</footer>
+</body>
+</html>
